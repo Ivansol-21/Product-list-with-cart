@@ -1,0 +1,203 @@
+---
+const { precio, nombre, id } = Astro.props;
+---
+
+<boton-agregar
+  precio={precio}
+  nombre={nombre}
+  data-id={`pr-${id}`}
+  class="absolute -bottom-5 w-3/5"
+>
+  <figure
+    class="flex justify-center items-center gap-2 w-full xs:gap-1 sm:gap-0.5"
+  >
+    <img
+      src="/public/assets/images/icon-add-to-cart.svg"
+      alt="Icono de agregar al carrito"
+      class="xs:w-5"
+    />
+    <figcaption class="size-text">Add to Cart</figcaption>
+  </figure>
+</boton-agregar>
+
+<style>
+  .size-text {
+    font-size: clamp(0.25rem, 0.7rem + 0.2cqw, 1rem);
+  }
+</style>
+
+<script>
+  // @ts-nocheck
+  class BotonAgregar extends HTMLElement {
+    static #template = document.createElement("template");
+    static {
+      this.#template.innerHTML = /* html */ `
+        <style>${this.baseStyles()}</style>
+        <button>
+          <slot>Agregar al carrito</slot>
+          <figure id="menos" class="btns oculto">
+            <img src="./assets/images/icon-decrement-quantity.svg" alt="retar" />
+          </figure>
+          <span class="oculto"></span>
+          <figure id="mas" class="btns oculto">
+            <img src="./assets/images/icon-increment-quantity.svg" alt="sumar" />
+          </figure>
+        </button>
+      `;
+    }
+    static get observedAttributes() {
+      return ["precio", "nombre", "data-id"];
+    }
+    static baseStyles() {
+      return /* css */ `
+        *,
+        *::after,
+        *::before {
+          box-sizing: border-box;
+          padding: 0;
+          margin: 0;
+        }
+        button {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap:20px;
+          background-color: white;;
+          padding: 10px;
+          border: solid 1px hsl(14, 86%, 42%);
+          border-radius: 25px;
+          cursor: pointer;
+          inline-size: 100%;
+          container-type: inline-size;
+        }
+        .btns {
+          inline-size: 20px;
+          block-size: 20px;
+          border: 1px solid white;
+          border-radius: 50%;
+        }
+        .oculto {  
+          display: none;
+        }
+        img {
+          display: block;
+          inline-size: 100%;
+          block-size: 100%;
+          object-fit: none;
+        }
+        .isActive {
+          background-color: hsl(14, 86%, 42%);
+          color: white;
+        }
+      `;
+    }
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" });
+      this.shadowRoot.appendChild(
+        BotonAgregar.#template.content.cloneNode(true),
+      );
+
+      this.$btn = this.shadowRoot.querySelector("button");
+      this.$styles = this.shadowRoot.querySelector("style");
+      this.$cantidad = this.shadowRoot.querySelector("span");
+      this.$menosYMas = this.shadowRoot.querySelectorAll(".btns");
+
+      this.contador = 0;
+      this.total = 0;
+      this.dataId = this.dataset.id;
+    }
+
+    connectedCallback() {
+      this.$btn.addEventListener("click", (e) => this.calcularYAgregar(e));
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+      if (name === "precio") {
+        const total = this.contador * Number(newValue);
+
+        this.dispatchEvent(
+          new CustomEvent("agregar-al-carrito", {
+            detail: {
+              nombre: this.getAttribute("nombre"),
+              precio: newValue,
+              cantidad: this.contador,
+              dataId: this.dataId,
+              total,
+            },
+            bubbles: true,
+            composed: true,
+          }),
+        );
+      }
+    }
+
+    calcularYAgregar(e) {
+      if (this.contador <= 0) {
+        this.$menosYMas.forEach((e) => {
+          e.classList.remove("oculto");
+          this.$btn.querySelector("slot").classList.add("oculto");
+        });
+        this.$cantidad.classList.remove("oculto");
+        this.contador += 1;
+        this.$cantidad.textContent = this.contador;
+        this.$btn.classList.add("isActive");
+      }
+      // Boton restar
+      if (e.target.closest("#menos")) {
+        this.contador -= 1;
+        this.$cantidad.textContent = this.contador;
+        if (this.contador <= 0) {
+          this.$menosYMas.forEach((e) => {
+            e.classList.add("oculto");
+            this.$btn.querySelector("slot").classList.remove("oculto");
+          });
+          this.$cantidad.classList.add("oculto");
+          this.$btn.classList.remove("isActive");
+        }
+      }
+      // Boton sumar
+      if (e.target.closest("#mas")) {
+        this.contador += 1;
+        this.$cantidad.textContent = this.contador;
+      }
+
+      this.total = this.contador * this.getAttribute("precio");
+
+      this.dispatchEvent(
+        new CustomEvent("agregar-al-carrito", {
+          detail: {
+            nombre: this.getAttribute("nombre"),
+            precio: this.getAttribute("precio"),
+            cantidad: this.contador,
+            total: this.total,
+            dataId: this.dataId,
+          },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+
+      // console.log(this.dataId);
+      // console.log("exitos", e.target.closest("#menos"));
+      // console.log(this.total);
+    }
+    set reset(v) {
+      this.contador = 0;
+      this.total = 0;
+      this.$cantidad.textContent = this.contador;
+      this.$cantidad.classList.add("oculto");
+      this.$menosYMas.forEach((e) => {
+        e.classList.add("oculto");
+        this.$btn.querySelector("slot").classList.remove("oculto");
+      });
+      this.$btn.classList.remove("isActive");
+    }
+  }
+  customElements.define("boton-agregar", BotonAgregar);
+
+  const comp = document.querySelector("boton-agregar");
+
+  // console.log(comp.contador);
+  // console.log(comp.total);
+</script>

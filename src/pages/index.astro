@@ -1,0 +1,53 @@
+---
+import BotonAgregar from "../components/BotonAgregar.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import datos from "../data/data.json";
+---
+
+<BaseLayout title="Product list with cart">
+  <h1 class="text-3xl font-bold mb-2">Dessserts</h1>
+  <main class="flex flex-col lg:flex-row">
+    <section class="grid justify-center xs:grid-cols-2 sm:grid-cols-3 flex-1">
+      {
+        datos.map((producto) => (
+          <figure
+            class="p-2 hover:shadow hover:shadow-red-300"
+            id={`pr-${producto.id}`}
+          >
+            <div class="relative flex justify-center mb-6 rounded-xl">
+              <picture>
+                <source
+                  media="(min-width: 1024px)"
+                  srcset={producto.image.desktop}
+                />
+                <source
+                  media="(min-width: 640px)"
+                  srcset={producto.image.tablet}
+                />
+                <img
+                  src={producto.image.mobile}
+                  alt={`Imagen de ${producto.name}`}
+                  class="rounded-xl"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
+              <BotonAgregar
+                precio={producto.price}
+                nombre={producto.name}
+                id={producto.id}
+                client:visible
+              />
+            </div>
+            <figcaption class="text-xs mb-1.5">{producto.category}</figcaption>
+            <h2 class="text-sm mb-1">{producto.name}</h2>
+            <p>Precio: ${producto.price}</p>
+          </figure>
+        ))
+      }
+    </section>
+    <section class="w-2xs">jajaja</section>
+  </main>
+</BaseLayout>
+
+<script src="../App.js"></script>

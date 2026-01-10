@@ -1,0 +1,25 @@
+---
+import "../styles/global.css";
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- displays site properly based on user's device -->
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./assets/images/favicon-32x32.png"
+    />
+
+    <title>{title}</title>
+  </head>
+  <body class="p-5 xs:p-6 sm:p-7">
+    <slot />
+  </body>
+</html>
