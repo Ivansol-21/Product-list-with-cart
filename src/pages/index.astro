@@ -5,7 +5,19 @@ import datos from "../data/data.json";
 ---
 
 <BaseLayout title="Product list with cart">
-  <h1 class="text-3xl font-bold mb-2">Dessserts</h1>
+  <header class="flex justify-between">
+    <h1 class="text-3xl font-bold mb-2">Dessserts</h1>
+    <button
+      class="size-10 p-2 border border-red-100 rounded-full cursor-pointer hover:bg-green-200"
+    >
+      <span></span>
+      <img
+        src="/shopping_cart_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg"
+        alt="Icono de carrito de compras"
+        class="h-full"
+      />
+    </button>
+  </header>
   <main class="flex flex-col lg:flex-row">
     <section class="grid justify-center xs:grid-cols-2 sm:grid-cols-3 flex-1">
       {
