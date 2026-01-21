@@ -1,5 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap');
 @import "tailwindcss";
 
 @theme {
     --breakpoint-xs: 26.563rem; /* 425px */
+    --font-Red-Hat-Text: "Red Hat Text", sans-serif;
+    --color-blaco-rosa: hsl(20, 50%, 98%);
+}
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, .4);
+    backdrop-filter: blur(5px);
 }

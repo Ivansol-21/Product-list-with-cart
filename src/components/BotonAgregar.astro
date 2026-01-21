@@ -6,10 +6,10 @@ const { precio, nombre, id } = Astro.props;
   precio={precio}
   nombre={nombre}
   data-id={`pr-${id}`}
-  class="absolute -bottom-5 w-3/5"
+  class="absolute -bottom-5 w-3/5 group"
 >
   <figure
-    class="flex justify-center items-center gap-2 w-full xs:gap-1 sm:gap-0.5"
+    class="flex justify-center items-center gap-2 w-full xs:gap-1 sm:gap-0.5 group-hover:text-[#c73a0f]"
   >
     <img
       src="./assets/images/icon-add-to-cart.svg"
@@ -34,13 +34,13 @@ const { precio, nombre, id } = Astro.props;
       this.#template.innerHTML = /* html */ `
         <style>${this.baseStyles()}</style>
         <button>
-          <slot>Agregar al carrito</slot>
+          <slot></slot>
           <figure id="menos" class="btns oculto">
-            <img src="./assets/images/icon-decrement-quantity.svg" alt="retar" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="2" fill="none" viewBox="0 0 10 2"><path fill="#fff" d="M0 .375h10v1.25H0V.375Z"/></svg>
           </figure>
           <span class="oculto"></span>
           <figure id="mas" class="btns oculto">
-            <img src="./assets/images/icon-increment-quantity.svg" alt="sumar" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="none" viewBox="0 0 10 10"><path fill="#fff" d="M10 4.375H5.625V0h-1.25v4.375H0v1.25h4.375V10h1.25V5.625H10v-1.25Z"/></svg>
           </figure>
         </button>
       `;
@@ -69,21 +69,27 @@ const { precio, nombre, id } = Astro.props;
           cursor: pointer;
           inline-size: 100%;
           container-type: inline-size;
+          font-family: "Red Hat Text", sans-serif;
+          font-weight: 500;
+          color: hsl(14, 65%, 9%);
         }
         .btns {
+          &:hover {
+            background-color: white;
+          }
+          &:hover svg path {
+            fill: #c73a0f;
+          }
+          display: grid;
+          place-items: center;
           inline-size: 20px;
           block-size: 20px;
           border: 1px solid white;
           border-radius: 50%;
+          
         }
         .oculto {  
           display: none;
-        }
-        img {
-          display: block;
-          inline-size: 100%;
-          block-size: 100%;
-          object-fit: none;
         }
         .isActive {
           background-color: hsl(14, 86%, 42%);
@@ -169,7 +175,7 @@ const { precio, nombre, id } = Astro.props;
           detail: {
             nombre: this.getAttribute("nombre"),
             precio: this.getAttribute("precio"),
-            cantidad: this.contador,
+            unidades: this.contador,
             total: this.total,
             dataId: this.dataId,
           },
@@ -177,10 +183,6 @@ const { precio, nombre, id } = Astro.props;
           composed: true,
         }),
       );
-
-      // console.log(this.dataId);
-      // console.log("exitos", e.target.closest("#menos"));
-      // console.log(this.total);
     }
     set reset(v) {
       this.contador = 0;
@@ -197,7 +199,4 @@ const { precio, nombre, id } = Astro.props;
   customElements.define("boton-agregar", BotonAgregar);
 
   const comp = document.querySelector("boton-agregar");
-
-  // console.log(comp.contador);
-  // console.log(comp.total);
 </script>

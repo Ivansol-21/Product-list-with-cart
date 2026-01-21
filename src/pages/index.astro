@@ -2,15 +2,19 @@
 import BotonAgregar from "../components/BotonAgregar.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import datos from "../data/data.json";
+import CartList from "../components/CartList.astro";
 ---
 
 <BaseLayout title="Product list with cart">
-  <header class="flex justify-between">
-    <h1 class="text-3xl font-bold mb-2">Dessserts</h1>
+  <header class="flex justify-between xl:mx-[9%]">
+    <h1 class="text-3xl font-bold mb-2">Desserts</h1>
     <button
-      class="size-10 p-2 border border-red-100 rounded-full cursor-pointer hover:bg-green-200"
+      class="size-10 p-2 border border-red-100 rounded-full cursor-pointer hover:bg-green-200 relative"
+      id="cart-btn"
     >
-      <span></span>
+      <span
+        class="absolute -top-2 -left-2 rounded-full bg-red-400 p-1 size-5 text-[9px] hidden"
+      ></span>
       <img
         src="/shopping_cart_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg"
         alt="Icono de carrito de compras"
@@ -18,12 +22,12 @@ import datos from "../data/data.json";
       />
     </button>
   </header>
-  <main class="flex flex-col lg:flex-row">
-    <section class="grid justify-center xs:grid-cols-2 sm:grid-cols-3 flex-1">
+  <main class="flex flex-col justify-center gap-x-3.5 lg:flex-row">
+    <section class="grid justify-center xs:grid-cols-2 sm:grid-cols-3">
       {
         datos.map((producto) => (
           <figure
-            class="p-2 hover:shadow hover:shadow-red-300"
+            class="p-2 hover:shadow hover:shadow-red-300 xs:max-w-62.5"
             id={`pr-${producto.id}`}
           >
             <div class="relative flex justify-center mb-6 rounded-xl">
@@ -51,15 +55,25 @@ import datos from "../data/data.json";
                 client:visible
               />
             </div>
-            <figcaption class="text-xs mb-1.5">{producto.category}</figcaption>
-            <h2 class="text-sm mb-1">{producto.name}</h2>
-            <p>Precio: ${producto.price}</p>
+            <figcaption class="text-xs mb-1.5 text-[#87635a]">
+              {producto.category}
+            </figcaption>
+            <h2 class="text-sm mb-1 text-[#260f08] font-semibold">
+              {producto.name}
+            </h2>
+            <p class="text-[#c73a0f] font-semibold">${producto.price}</p>
           </figure>
         ))
       }
     </section>
-    <section class="w-2xs">jajaja</section>
+    <section class="w-2xs"></section>
   </main>
+  <dialog
+    class="right-0 top-0 max-h-none bottom-0 h-full outline-none inset-auto"
+    id="cart-modal"
+  >
+    <CartList />
+  </dialog>
 </BaseLayout>
 
 <script src="../App.js"></script>
