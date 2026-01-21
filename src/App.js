@@ -1,6 +1,7 @@
 const componenteCartList = document.querySelector("#cart-modal cart-list"),
   modal = document.querySelector("#cart-modal"),
   cartBtn = document.querySelector("#cart-btn"),
+  $sct = document.querySelector("main section + section"),
   cartBtnNum = document.querySelector("#cart-btn span");
 
 /* ---- El boton agregar de cada producto dispara un evento. Usamos el Html para escuchar ese evento (asi podemos escuchar el eventos de todos lo botones que existan) 
@@ -58,23 +59,20 @@ modal.addEventListener("click", (e) => {
 let estado = false;
 
 if (window.innerWidth >= "1024") {
-  const $sct = document.querySelector("main section + section");
   $sct.appendChild(componenteCartList);
   cartBtn.classList.add("hidden");
   estado = true;
 }
 
-const width = (e) => {
-  const $sct = document.querySelector("main section + section");
-
-  if (e.target.innerWidth >= "1024") {
+const width = () => {
+  if (window.innerWidth >= "1024") {
     if (!estado) {
       $sct.appendChild(componenteCartList);
       cartBtn.classList.add("hidden");
       estado = true;
     }
   }
-  if (e.target.innerWidth < "1024") {
+  if (window.innerWidth < "1024") {
     if (estado) {
       modal.appendChild(componenteCartList);
       cartBtn.classList.remove("hidden");
@@ -82,7 +80,8 @@ const width = (e) => {
     }
   }
 };
-window.addEventListener("resize", (e) => width(e));
+
+window.addEventListener("resize", width);
 /* --------------------------------------------------------------------------------------------- */
 componenteCartList.addEventListener("confirm-order", (e) => {
   console.log(e.detail.$fragment);

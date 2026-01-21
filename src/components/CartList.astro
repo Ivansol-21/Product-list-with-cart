@@ -178,8 +178,15 @@
     }
 
     connectedCallback() {
-      this.$list.addEventListener("click", (e) => this.deleteProduct(e));
-      this.$btnConfirm.addEventListener("click", (e) => this.confirmOrder(e));
+      this.deleteProductHandler = (e) => this.deleteProduct(e);
+      this.confirmOrderHandler = () => this.confirmOrder();
+      this.$list.addEventListener("click", this.deleteProductHandler);
+      this.$btnConfirm.addEventListener("click", this.confirmOrderHandler);
+    }
+
+    disconnectedCallback() {
+      this.$list.removeEventListener("click", this.deleteProductHandler);
+      this.$btnConfirm.removeEventListener("click", this.confirmOrderHandler);
     }
 
     render(e) {
@@ -342,7 +349,7 @@
       }
     }
 
-    confirmOrder(e) {
+    confirmOrder() {
       const $fragment = document.createDocumentFragment(),
         $products = this.$list.cloneNode(true),
         $total = this.shadowRoot
