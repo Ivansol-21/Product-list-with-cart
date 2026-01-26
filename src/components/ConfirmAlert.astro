@@ -1,0 +1,176 @@
+---
+
+---
+
+<dialog
+  id="confirm-modal"
+  class="p-6 rounded-t-2xl outline-none inset-auto left-1/2 bottom-0 -translate-x-2/4 min-h-[90dvh] w-[95%] max-w-97.5 sm:inset-[50%] sm:-translate-y-1/2 sm:min-w-125 sm:min-h-125 sm:rounded-2xl"
+>
+  <confirm-alert></confirm-alert>
+</dialog>
+
+<script>
+  // @ts-nocheck
+  import data from "../data/data.json";
+  class ConfirmAlert extends HTMLElement {
+    static #template = document.createElement("template");
+    static {
+      this.#template.innerHTML = /* html */ `
+                <style>${this.baseStyles()}</style>
+                <img src="./assets/images/icon-order-confirmed.svg" alt="Order comfirm" />
+                <h2>Order Confirmed</h2>
+                <p>We hope you enjoy your food!</p>
+                <div class="products"></div>
+                <button>Start New Order</button>
+            `;
+    }
+    static baseStyles() {
+      return /* css */ `
+          *,
+          *::after,
+          *::before {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+          }
+          :host {
+            color: hsl(14, 65%, 9%);
+          }
+          p {
+            color: hsl(12, 20%, 44%);
+            font-size: 14px;
+          }
+          .products {
+            background-color: hsl(20, 50%, 98%);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+          }
+          .products ul{
+            max-height: 300px;
+            overflow-y: auto;
+          }
+          .wrapper {
+            display: grid;
+            grid-template-columns: 60px 20px;
+            grid-template-areas:
+              "thumbnail nombre nombre  nombre precioTotal"
+              " thumbnail unidades precioUnidad . precioTotal";
+            margin: 10px 0;
+          }
+          .wrapper img {
+            grid-area: thumbnail;
+            inline-size: 50px;
+            block-size: 50px;
+            border-radius: 8px;
+          }
+          .wrapper h3 {
+            grid-area: nombre;
+            font-size: 14px;
+            font-weight: 500;
+          }
+          .wrapper span {
+            grid-area: unidades;
+            color: hsl(14, 86%, 42%);
+            font-size: 14px;
+            font-weight: 600;
+          }
+          .wrapper p {
+            grid-area: precioUnidad;
+            font-size: 14px;
+            color: hsl(12, 20%, 44%);
+          }
+          .wrapper b {
+            grid-area: precioTotal;
+            align-self: center;
+            justify-self: end;
+            font-size: 14px;
+            font-weight: 600;
+          }
+          .total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+          }
+          .total span {
+            font-weight: 700;
+          }
+          hr {
+            opacity: .1;
+            margin: 5px 0 0 0;
+          }
+          button {
+            inline-size: 100%;
+            padding: 12px;
+            border-style: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            color: hsl(20, 50%, 98%);
+            background-color: hsl(14, 86%, 42%);
+            &:hover {
+              background-color: hsl(159, 69%, 38%);
+            }
+          }
+          @media (min-width: 640px) {
+            .products ul {
+              max-height: 200px;
+            }
+          }
+        `;
+    }
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" });
+      this.shadowRoot.appendChild(
+        ConfirmAlert.#template.content.cloneNode(true),
+      );
+      this.$btn = this.shadowRoot.querySelector("button");
+      this.$btn.addEventListener("click", (e) => {
+        location.reload();
+      });
+    }
+
+    render($fragament) {
+      const $message = this.shadowRoot.querySelector(".products"),
+        $btn = $fragament.querySelectorAll("button"),
+        $p = $fragament.querySelectorAll("li p");
+
+      // Se separa el texto para organizarlo
+      $p.forEach((e) => {
+        const $parent = e.parentNode,
+          $newP = document.createElement("b"),
+          textSeparado = e.textContent.split("-");
+
+        e.textContent = textSeparado[0];
+        $newP.textContent = textSeparado[1];
+
+        $parent.appendChild($newP);
+      });
+
+      // Se agregan las miniaturas de los productos
+      data.forEach((p) => {
+        const $wrapper = $fragament.querySelector(`#pr-${p.id} .wrapper`);
+        console.log($wrapper);
+
+        if ($wrapper) {
+          const $thumbnail = document.createElement("img");
+
+          $thumbnail.src = p.image.thumbnail;
+
+          $wrapper.prepend($thumbnail);
+        }
+      });
+
+      // Se eliminan los botones
+      $btn.forEach((b) => {
+        b.remove();
+      });
+      $message.innerHTML = "";
+      $message.appendChild($fragament);
+
+      return $message;
+    }
+  }
+  customElements.define("confirm-alert", ConfirmAlert);
+</script>

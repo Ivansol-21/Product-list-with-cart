@@ -3,10 +3,13 @@ import BotonAgregar from "../components/BotonAgregar.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import datos from "../data/data.json";
 import CartList from "../components/CartList.astro";
+import ConfirmAlert from "../components/ConfirmAlert.astro";
 ---
 
 <BaseLayout title="Product list with cart">
-  <header class="flex justify-between xl:mx-[9%]">
+  <header
+    class="flex justify-between xl:mx-[9%] bg-blaco-rosa sticky top-0 z-10 py-2.5"
+  >
     <h1 class="text-3xl font-bold mb-2">Desserts</h1>
     <button
       class="size-10 p-2 border border-red-100 rounded-full cursor-pointer hover:bg-green-200 relative"
@@ -22,7 +25,7 @@ import CartList from "../components/CartList.astro";
       />
     </button>
   </header>
-  <main class="flex flex-col justify-center gap-x-3.5 lg:flex-row">
+  <main class="flex flex-col justify-center gap-x-3.5 lg:flex-row mt-3.5">
     <section class="grid justify-center xs:grid-cols-2 sm:grid-cols-3">
       {
         datos.map((producto) => (
@@ -69,11 +72,12 @@ import CartList from "../components/CartList.astro";
     <section class="w-2xs"></section>
   </main>
   <dialog
-    class="right-0 top-0 max-h-none bottom-0 h-full outline-none inset-auto"
+    class="right-0 max-h-none h-full outline-none inset-auto"
     id="cart-modal"
   >
     <CartList />
   </dialog>
+  <ConfirmAlert />
 </BaseLayout>
 
 <script src="../App.js"></script>

@@ -1,5 +1,6 @@
 const componenteCartList = document.querySelector("#cart-modal cart-list"),
   modal = document.querySelector("#cart-modal"),
+  confirmAlert = document.querySelector("#confirm-modal confirm-alert"),
   cartBtn = document.querySelector("#cart-btn"),
   $sct = document.querySelector("main section + section"),
   cartBtnNum = document.querySelector("#cart-btn span");
@@ -83,6 +84,17 @@ const width = () => {
 
 window.addEventListener("resize", width);
 /* --------------------------------------------------------------------------------------------- */
+const confirmModal = document.querySelector("#confirm-modal");
+
 componenteCartList.addEventListener("confirm-order", (e) => {
-  console.log(e.detail.$fragment);
+  confirmAlert.render(e.detail.$fragment);
+  modal.close();
+  confirmModal.showModal();
+});
+confirmModal.addEventListener("click", (e) => {
+  if (e.target === confirmModal) {
+    confirmModal.close();
+    document.body.classList.remove("overflow-hidden");
+    location.reload();
+  }
 });
